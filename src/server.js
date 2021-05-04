@@ -12,24 +12,46 @@ const types = ['product', 'coupon', 'user']
 
 export const start = async () => {
   const rootSchema = `
-    schema {
-      query: Query
-      mutation: Mutation
+    type Cat {
+      name: String
     }
+    
+    type _Query {
+      myCat: Cat
+    }
+    
+    schema {
+      query: _Query
+}
   `
   const schemaTypes = await Promise.all(types.map(loadTypeSchema))
 
   const server = new ApolloServer({
     typeDefs: [rootSchema, ...schemaTypes],
-    resolvers: merge({}, product, coupon, user),
-    async context({ req }) {
-      const user = await authenticate(req)
-      return { user }
+    resolvers: {
+      _Query: {
+        myCat(){
+          console.log('Hello there')
+          return {name:'Ivar'}
+        }
+      },
+      async context({req}) {
+        return {user: null}
+      },
     }
   })
-
-  await connect(config.dbUrl)
-  const { url } = await server.listen({ port: config.port })
-
+  try {
+    await connect(config.dbUrl)
+  }catch(error){
+    console.log(error)
+  }
+  let url=''
+  try {
+    const data = await server.listen({port: config.port})
+    url= data.url
+  }catch(error){
+    url = 'http://localhost:3000'
+    console.log(error)
+  }
   console.log(`GQL server ready at ${url}`)
 }
