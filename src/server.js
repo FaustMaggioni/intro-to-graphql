@@ -22,6 +22,7 @@ export const start = async () => {
     
     schema {
       query: _Query
+      mutation: Mutation
 }
   `
   const schemaTypes = await Promise.all(types.map(loadTypeSchema))
@@ -34,24 +35,17 @@ export const start = async () => {
           console.log('Hello there')
           return {name:'Ivar'}
         }
+      }
       },
-      async context({req}) {
-        return {user: null}
-      },
+      async context({ req }) {
+
+        return { null }
+      }
     }
-  })
-  try {
-    await connect(config.dbUrl)
-  }catch(error){
-    console.log(error)
-  }
-  let url=''
-  try {
-    const data = await server.listen({port: config.port})
-    url= data.url
-  }catch(error){
-    url = 'http://localhost:3000'
-    console.log(error)
-  }
+
+  )
+
+  await connect(config.dbUrl)
+  const {url} = await server.listen({port: config.port})
   console.log(`GQL server ready at ${url}`)
 }
