@@ -4,20 +4,25 @@ import { authenticate } from './utils/auth'
 import { merge } from 'lodash'
 import config from './config'
 import { connect } from './db'
-import product from './types/product/product.resolvers'
+/*import product from './types/product/product.resolvers'
 import coupon from './types/coupon/coupon.resolvers'
-import user from './types/user/user.resolvers'
+import user from './types/user/user.resolvers'*/
 
 const types = ['product', 'coupon', 'user']
 
 export const start = async () => {
-  const rootSchema = `
+  const rootSchema = /*SDL: Schema Definition Language*/`
     type Cat {
       name: String
+      edad: Int
     }
-    
+    type Auto{
+      modelo: String
+    }
     type _Query {
       myCat: Cat
+      myAuto: Auto
+      hello: String
     }
     
     schema {
@@ -33,13 +38,19 @@ export const start = async () => {
       _Query: {
         myCat(){
           console.log('Hello there')
-          return {name:'Ivar'}
+          return {name:'Ivar', edad: 10}
+        },
+        myAuto(){
+          return{modelo:'Yaris'}
+        },
+        hello(){
+          return 'Hola'
         }
       }
       },
       async context({ req }) {
 
-        return { null }
+        return { user: null }
       }
     }
 
