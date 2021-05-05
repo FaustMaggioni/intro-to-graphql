@@ -14,7 +14,8 @@ export const start = async () => {
   const rootSchema = /*SDL: Schema Definition Language*/`
     type Cat {
       name: String
-      edad: Int
+      edad: Int!
+      bestFriend: [Cat!]!
     }
     type Auto{
       modelo: String
@@ -38,7 +39,11 @@ export const start = async () => {
       _Query: {
         myCat(){
           console.log('Hello there')
-          return {name:'Ivar', edad: 10}
+          return {name:'Ivar', edad: 10, bestFriend: [{
+              name:'Uma',
+              edad: 13,
+              bestFriend: {}
+            }]}
         },
         myAuto(){
           return{modelo:'Yaris'}
